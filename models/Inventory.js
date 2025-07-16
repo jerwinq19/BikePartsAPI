@@ -1,3 +1,4 @@
+const db = require('../models/db')
 
 let inventories = [
     { id: 1, name: "Helmet", price: 100, quantity: 10 },
@@ -22,15 +23,30 @@ let inventories = [
     { id: 20, name: "Venzo Platform Pedals", price: 950, quantity: 10 }
 ];
 
+
 // read
 const getAllProduct = () => {
-    return inventories
+    return new Promise((resolve, reject) => {
+        db.run(`INSERT INTO inventory (name, price, quantity) values ('Ragusa 44mm sealed bearing Headset', 214, 10)`, (err) => {
+            if (err) return reject(err)
+
+            db.all(`SELECT * FROM inventory`, (error, rows) => {
+                if (error) return reject(error)
+                resolve(rows)
+            })
+        })
+    })
 }
+
 //
 const getOneProductById = (id) => {
-    const filteredByID = inventories.filter(i => i.id === id)
-
-    return filteredByID
+    const query = `SELECT * FROM inventory WHERE id = ?`
+    return new Promise((resolve, reject) => {
+        db.get(query, [id], (error, row) => {
+            if (error) return reject(error)
+                resolve(row)
+        })
+    })
 }
 
 // create

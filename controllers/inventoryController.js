@@ -1,28 +1,48 @@
 const Inventory = require('../models/Inventory')
 
 
-exports.GetInventories = (req, res) => {
-    const data = Inventory.getAllProduct()
+exports.GetInventories = async (req, res) => {
+    try {
+        const products = await Inventory.getAllProduct()
 
-    res.status(200).json({
-        message: "Fetched Inventory",
-        content: data
-    })
+        res.status(200).json({
+            message: "Fetched Inventory",
+            content: products
+        })
+    } catch (error) {
+        res.status(500).json({
+            "message": "error"
+        })
+    }
+
+
+
 }
 
-exports.GetInventorie = (req, res) => {
+exports.GetInventorie = async (req, res) => {
     const ProductID = parseInt(req.params.id)
 
-    const data = Inventory.getOneProductById(ProductID)
+    try {
+        const product = await Inventory.getOneProductById(ProductID)
 
-    if (data.length === 0) return res.status(404).json({
-        message: "not found"
-    })
+        if (!product) {
+            return res.status(404).json({
+                message: "Product not found",
+                content: null
+            })
+        }
 
-    res.status(200).json({
-        message: "Data Retrived!",
-        content: data,
-    })
+        res.status(200).json({
+            message: "Data Retrived!",
+            content: product,
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "error fetching data!"
+        })
+    }
+
+
 }
 
 
