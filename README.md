@@ -1,7 +1,3 @@
-Sure! Here's a refined and more professional version of your README, with improved formatting, clarity, and structure:
-
----
-
 # BikePartsAPI
 
 **BikePartsAPI** is a work-in-progress (WIP) RESTful API built using **Express.js** to manage bike parts inventory.
@@ -41,7 +37,3 @@ Make sure to prepend each route with the base URL (e.g., `http://localhost:3000/
 ## 🧑‍💻 Development Status
 
 This project is currently under active development. More features will be added soon!
-
----
-
-Let me know if you'd like to add installation instructions, environment setup steps, or database configuration details!
