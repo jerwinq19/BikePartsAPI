@@ -11,7 +11,7 @@ This API allows you to perform basic CRUD operations on an inventory of bike par
 ---
 
 ## 📦 Available Endpoints
-
+ - the deployed link: https://bikepartsapi.onrender.com/api/
 ### Inventory Management
 
 | Method | Route                  | Description                           |
