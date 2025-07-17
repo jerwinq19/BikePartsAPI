@@ -27,13 +27,9 @@ let inventories = [
 // read
 const getAllProduct = () => {
     return new Promise((resolve, reject) => {
-        db.run(`INSERT INTO inventory (name, price, quantity) values ('Ragusa 44mm sealed bearing Headset', 214, 10)`, (err) => {
-            if (err) return reject(err)
-
-            db.all(`SELECT * FROM inventory`, (error, rows) => {
-                if (error) return reject(error)
-                resolve(rows)
-            })
+        db.all(`SELECT * FROM inventory`, (error, rows) => {
+            if (error) return reject(error)
+            resolve(rows)
         })
     })
 }
@@ -44,43 +40,44 @@ const getOneProductById = (id) => {
     return new Promise((resolve, reject) => {
         db.get(query, [id], (error, row) => {
             if (error) return reject(error)
-                resolve(row)
+            resolve(row)
         })
     })
 }
 
 // create
 const createProduct = (data) => {
-    inventories.push(data)
+    const query = `INSERT INTO inventory (name, price, quantity) VALUES (?,?,?)`
+    const { name, price, quantity } = data
+    return new Promise((resolve, reject) => {
+        db.run(query, [name, price, quantity], (error) => {
+            if (error) return reject(error)
+            resolve({ id: this.lastID, name, price, quantity })
+        })
+    })
 }
 
 // delete by id 
 const DeleteByID = (id) => {
-
-    const index = inventories.findIndex(i => i.id === id)
-
-    if (index !== -1) {
-        inventories.splice(index, 1)
-        return true
-    }
-    return false
+    const query = `DELETE FROM inventory WHERE id = ?`
+    return new Promise((resolve, reject) => {
+        db.run(query, [id], (error) => {
+            if (error) return reject(error)
+            resolve(`delete a item with ID number of ${id}`)
+        })
+    })
 }
 
 // update by id 
 const UpdateByID = (id, data) => {
-
-    const index = inventories.findIndex(i => i.id === id)
-
+    const query = `UPDATE inventory SET name = ?, price = ?, quantity = ? WHERE id = ?`
     const { name, price, quantity } = data
-
-    inventories[index] = {
-        ...inventories[index],
-        name,
-        price,
-        quantity
-    }
-
-    if (index) return index
+    return new Promise((resolve, reject) => {
+        db.run(query, [name, price, quantity, id], (error) => {
+            if (error) return reject (error)
+            resolve(`Successfully Updated a Data!: ${name} ${price} ${quantity}`)
+        })
+    })
 }
 
 

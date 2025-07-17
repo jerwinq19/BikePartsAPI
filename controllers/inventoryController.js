@@ -42,59 +42,71 @@ exports.GetInventorie = async (req, res) => {
         })
     }
 
-
 }
 
 
-exports.CreateInventory = (req, res) => {
-    const { name, price, quantity } = req.body
+exports.CreateInventory = async (req, res) => {
+    try {
+        const { name, price, quantity } = req.body
 
-    const newData = {
-        id: Inventory.inventories.length + 1,
-        name,
-        price,
-        quantity,
+        const newData = {
+            name,
+            price,
+            quantity,
+        }
+
+        const createData = await Inventory.createProduct(newData)
+
+        return res.status(201).json({
+            message: "Content Created!",
+            content: createData,
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "Something went wrong please try again."
+        })
     }
-
-    Inventory.createProduct(newData)
-    res.status(200).json({
-        message: "Content Created!",
-        content: newData
-    })
-
 }
 
-exports.DeleteOneItem = (req, res) => {
-    const ProductID = parseInt(req.params.id)
+exports.DeleteOneItem = async (req, res) => {
+    try {
+        const productID = parseInt(req.params.id)
 
-    const isDelete = Inventory.DeleteByID(ProductID)
+        const deletedItem = await Inventory.DeleteByID(productID)
 
-    if (isDelete) {
+        if (!deletedItem) return res.status(500).json({
+            message: "Please put a valid ID."
+        })
 
         res.status(200).json({
-            message: `Product with ${ProductID}#ID is deleted.`,
-            content: Inventory.inventories,
+            message: deletedItem
         })
-    } else {
-        res.status(400).json({
-            message: "Invalid request!"
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Something went wrong."
         })
     }
 }
 
-exports.EditeOneItem = (req, res) => {
-    const ProductID = parseInt(req.params.id)
+exports.EditeOneItem = async (req, res) => {
+    try {
+        const ProductID = parseInt(req.params.id)
+        const newData = {
+            name: req.body.name,
+            price: req.body.price,
+            quantity: req.body.quantity
+        }
+        const updateItem = await Inventory.UpdateByID(ProductID, newData)
 
-    const updateInventory = Inventory.UpdateByID(ProductID, req.body)
+        if (updateItem) return res.status(200).json({
+            message: updateItem
+        })
 
-    if (updateInventory === -1) {
-        return res.status(400).json({
-            message: "Please put a valid id."
+    } catch (error) {
+        res.status(404).json({
+            message: error,
+            conttent: req.body
         })
     }
-
-    res.status(200).json({
-        message: "Successfully updated!",
-        tite: updateInventory
-    })
 }
